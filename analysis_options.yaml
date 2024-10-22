@@ -1,0 +1,5 @@
+analyzer:
+  exclude:
+    - "plugins/**"
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
