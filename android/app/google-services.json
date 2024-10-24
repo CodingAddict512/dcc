@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "1020733915446",
+    "firebase_url": "https://dcc-demo-environment.firebaseio.com",
+    "project_id": "dcc-demo-environment",
+    "storage_bucket": "dcc-demo-environment.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020733915446:android:8dca93b62812b65e5c3397",
+        "android_client_info": {
+          "package_name": "com.asseco.dcc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020733915446-j9rm9jd1p8qhjd8oc1u757c96836lq8d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0oRNdU9lijtUrpcyyDHa6ZqCV6dDWBwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1020733915446-j9rm9jd1p8qhjd8oc1u757c96836lq8d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1020733915446:android:be28665b59165df65c3397",
+        "android_client_info": {
+          "package_name": "dk.asseco.dcc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1020733915446-j9rm9jd1p8qhjd8oc1u757c96836lq8d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA0oRNdU9lijtUrpcyyDHa6ZqCV6dDWBwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1020733915446-j9rm9jd1p8qhjd8oc1u757c96836lq8d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

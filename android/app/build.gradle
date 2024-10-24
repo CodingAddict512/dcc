@@ -1,0 +1,181 @@
+// plugins {
+//     id "com.android.application"
+//     id "kotlin-android"
+//     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+//     id "dev.flutter.flutter-gradle-plugin"
+// }
+
+// android {
+//     namespace = "com.example.dcc"
+//     compileSdk = flutter.compileSdkVersion
+//     ndkVersion = flutter.ndkVersion
+
+//     compileOptions {
+//         sourceCompatibility = JavaVersion.VERSION_1_8
+//         targetCompatibility = JavaVersion.VERSION_1_8
+//     }
+
+//     kotlinOptions {
+//         jvmTarget = JavaVersion.VERSION_1_8
+//     }
+
+//     defaultConfig {
+//         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
+//         applicationId = "com.example.dcc"
+//         // You can update the following values to match your application needs.
+//         // For more information, see: https://flutter.dev/to/review-gradle-config.
+//         minSdk = flutter.minSdkVersion
+//         targetSdk = flutter.targetSdkVersion
+//         versionCode = flutter.versionCode
+//         versionName = flutter.versionName
+//     }
+
+//     buildTypes {
+//         release {
+//             // TODO: Add your own signing config for the release build.
+//             // Signing with the debug keys for now, so `flutter run --release` works.
+//             signingConfig = signingConfigs.debug
+//         }
+//     }
+// }
+
+// flutter {
+//     source = "../.."
+// }
+
+
+// plugins {
+//     id "com.android.application"
+//     id "kotlin-android"
+//     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+//     id "dev.flutter.flutter-gradle-plugin"
+// }
+
+// android {
+//     namespace "com.example.dcc" // Use the correct syntax for the namespace
+//     compileSdk = flutter.compileSdkVersion
+//     ndkVersion = flutter.ndkVersion
+
+//     compileOptions {
+//         sourceCompatibility JavaVersion.VERSION_1_8
+//         targetCompatibility JavaVersion.VERSION_1_8
+//     }
+
+//     kotlinOptions {
+//         jvmTarget = "1.8" // Set as a string for compatibility
+//     }
+
+//     defaultConfig {
+//         applicationId "com.example.dcc" // Remove the equals sign for Groovy syntax
+//         minSdk 16
+//         targetSdk flutter.targetSdkVersion
+//         versionCode flutter.versionCode
+//         versionName flutter.versionName
+//     }
+
+//     buildTypes {
+//         release {
+//             signingConfig signingConfigs.debug // Signing with the debug keys for now
+//         }
+// release {
+        //     signingConfig signingConfigs.debug
+        //     multiDexKeepFile file('multidex-config.txt')
+        // }
+//     }
+// flavorDimensions "app"
+
+//     productFlavors {
+//         production {
+//             dimension "app"
+//         }
+//     }
+
+//     sourceSets {
+//         main.java.srcDirs += 'src/main/kotlin'
+//     }
+
+//     lintOptions {
+//         disable 'InvalidPackage'
+//     }
+// }
+
+// flutter {
+//     source = "../.."
+// }
+
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+
+android {
+    namespace "dk.asseco.dcc"
+    compileSdkVersion flutter.compileSdkVersion
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17  // Updated to Java 17
+        targetCompatibility JavaVersion.VERSION_17  // Updated to Java 17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"  // Set jvmTarget to 17 for JDK 17 compatibility
+    }
+
+    defaultConfig {
+        applicationId "dk.asseco.dcc"
+        minSdkVersion 23
+        targetSdkVersion 33
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        multiDexEnabled true
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "googleMapsApiKey", "AIzaSyBNMpilGnf2q3sYd9J9byHJnCbN4QXSB9Y"
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.debug
+        }
+        
+    }
+
+    
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
+}
+apply plugin: 'com.google.gms.google-services'
