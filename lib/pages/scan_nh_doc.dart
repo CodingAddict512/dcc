@@ -11,6 +11,7 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 // class ScanNhDocPage extends StatefulWidget {
 //   ScanNhDocPage();
@@ -26,8 +27,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 //   @override
 //   Widget build(BuildContext context) {
-//     final externalNhDocCubit = context.watch<ExternalNhDocCubit>();
-//     final pickupsCubit = context.watch<PickupsCubit>();
+//     final externalNhDocCubit = Provider.of<ExternalNhDocCubit>();
+//     final pickupsCubit = Provider.of<PickupsCubit>();
 //     final navigator = Navigator.of(context);
 //     final localizations = DccLocalizations.of(context);
 
@@ -148,8 +149,8 @@ class _ScanNhDocPageState extends State<ScanNhDocPage> {
 
   @override
   Widget build(BuildContext context) {
-    final externalNhDocCubit = context.watch<ExternalNhDocCubit>();
-    final pickupsCubit = context.watch<PickupsCubit>();
+    final externalNhDocCubit = Provider.of<ExternalNhDocCubit>(context);
+    final pickupsCubit = Provider.of<PickupsCubit>(context);
     final navigator = Navigator.of(context);
     final localizations = DccLocalizations.of(context);
 

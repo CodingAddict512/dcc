@@ -18,8 +18,8 @@ class DetailsButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pickup = Provider.of<Pickup>(context);
-    final pickupsCubit = context.watch<PickupsCubit>();
-    final metricTypeCubit = context.watch<MetricTypeCubit>();
+    final pickupsCubit = Provider.of<PickupsCubit>(context);
+    final metricTypeCubit = Provider.of<MetricTypeCubit>(context);
     final localizations = DccLocalizations.of(context);
     final navigator = Navigator.of(context);
 

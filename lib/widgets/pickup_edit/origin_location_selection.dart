@@ -9,13 +9,14 @@ import 'package:dcc/widgets/pickup_edit/location_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class OriginLocationSelection extends StatelessWidget {
   Widget loading() => Text("");
 
   @override
   Widget build(BuildContext context) {
-    final pickupEditCubit = context.watch<PickupEditCubit>();
+    final pickupEditCubit = Provider.of<PickupEditCubit>(context);
 
     return BlocSubStateBuilder<OriginLocationsCubit, OriginLocationsState,
         OriginLocationsLoaded>(

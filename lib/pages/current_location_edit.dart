@@ -3,6 +3,7 @@ import 'package:dcc/localization/app_localizations.dart';
 import 'package:dcc/models/location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 // import 'package:uuid/uuid_util.dart';
 import 'package:dcc/extensions/compat.dart';
@@ -54,7 +55,8 @@ class CurrentLocationEdit extends StatelessWidget {
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
             final id = Uuid().v4();
-            final geoLocationCubit = context.watch<GeoLocationCubit>();
+            final geoLocationCubit = Provider.of<GeoLocationCubit>(context);
+            // final geoLocationCubit = Provider.of<GeoLocationCubit>();
             final geoPoint = await geoLocationCubit.getCurrentGeoPosition();
 
             final location = Location(

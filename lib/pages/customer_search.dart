@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:provider/provider.dart';
 
 class CustomerSearch extends StatefulWidget {
   final List<CustomerStub> customers;
@@ -40,12 +41,14 @@ class CustomerSearchState extends State<CustomerSearch> {
 
   @override
   Widget build(BuildContext context) {
-    final geoLocationCubit = context.watch<GeoLocationCubit>();
+    final geoLocationCubit = Provider.of<GeoLocationCubit>(context);
+    // final geoLocationCubit = Provider.of<GeoLocationCubit>();
     final localization = DccLocalizations.of(context);
     final navigator = Navigator.of(context);
 
     Future<List<CustomerStub>> search(String query) async {
-      final primaryLocationsCubit = context.watch<PrimaryLocationsCubit>();
+      final primaryLocationsCubit = Provider.of<PrimaryLocationsCubit>(context);
+      // final primaryLocationsCubit = Provider.of<PrimaryLocationsCubit>();
       return primaryLocationsCubit.state.ifState<PrimaryLocationsLoaded>(
         withState: (state) async {
           // If location permission denied or haven't received current location yet, show all customers

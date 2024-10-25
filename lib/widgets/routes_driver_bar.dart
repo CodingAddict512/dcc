@@ -7,6 +7,7 @@ import 'package:dcc/widgets/bloc_sub_state/bloc_sub_state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class RoutesDriverBar extends StatelessWidget {
   static const _borderRadius = 8.0;
@@ -18,7 +19,7 @@ class RoutesDriverBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final routesCubit = context.watch<RoutesCubit>();
+    final routesCubit = Provider.of<RoutesCubit>(context);
     final localizations = DccLocalizations.of(context);
     final navigator = Navigator.of(context);
 

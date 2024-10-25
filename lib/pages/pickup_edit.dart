@@ -15,6 +15,7 @@ import 'package:dcc/widgets/pickup_edit/weight_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class PickupEdit extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
@@ -27,7 +28,7 @@ class PickupEdit extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizations = DccLocalizations.of(context);
     final navigator = Navigator.of(context);
-    final pickupEditCubit = context.watch<PickupEditCubit>();
+    final pickupEditCubit = Provider.of<PickupEditCubit>(context);
     pickupEditCubit.load(pickup);
 
     final fromText = Padding(

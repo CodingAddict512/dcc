@@ -10,14 +10,15 @@ import 'package:dcc/widgets/bloc_sub_state/bloc_sub_state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class ExternalNhDocPage extends StatelessWidget {
   Widget loading() => Center(child: CircularProgressIndicator());
 
   @override
   Widget build(BuildContext context) {
-    final pickupsCubit = context.watch<PickupsCubit>();
-    final externalNhDocCubit = context.watch<ExternalNhDocCubit>();
+    final pickupsCubit = Provider.of<PickupsCubit>(context);
+    final externalNhDocCubit = Provider.of<ExternalNhDocCubit>(context);
     final navigator = Navigator.of(context);
 
     pickupsCubit.state.ifState<PickupsLoaded>(
@@ -30,7 +31,7 @@ class ExternalNhDocPage extends StatelessWidget {
     );
 
     Widget reselectButton() {
-      return context.watch<PickupsCubit>().state.ifState<PickupsLoaded>(
+      return Provider.of<PickupsCubit>(context).state.ifState<PickupsLoaded>(
         withState: (state) {
           return ElevatedButton.icon(
             onPressed: (state.pickup.status == Status.STARTED ||

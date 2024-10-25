@@ -2,11 +2,13 @@ import 'package:dcc/style/dcc_font_family.dart';
 import 'package:flutter/material.dart';
 
 class DccLightTheme {
-  static final _lightPrimaryColor = Color(0xff1C73E8);
+  static final _lightPrimaryColor = Colors.black;
+  // static final _lightPrimaryColor = Color(0xff1C73E8);
   static final _lightPrimaryColorLight = Color(0xff1a73e8);
-  static final _lightPrimaryColorDark = Color(0xff002984);
+  static final _lightPrimaryColorDark = Colors.white;
+  // static final _lightPrimaryColorDark = Color(0xff002984);
   static final _lightAccentColor = Colors.black;
-  static final _lightBackgroundColor = Color(0xedeff1);
+  static final _lightBackgroundColor = Colors.white;
 
   static final _lightColorScheme = ColorScheme(
     primary: _lightPrimaryColor,
@@ -44,6 +46,16 @@ class DccLightTheme {
   );
 
   static final themeData = ThemeData(
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.blue,
+        // primary: Colors.blue,
+        // onPrimary: Colors.white,
+        textStyle: TextStyle(
+          color: Colors.white,
+        ),
+      ),
+    ),
     iconTheme: _lightPrimaryIconTheme,
     primaryIconTheme: _lightPrimaryIconTheme,
     primaryColor: _lightPrimaryColor,
@@ -52,6 +64,9 @@ class DccLightTheme {
     primaryTextTheme: _lightPrimaryTextTheme,
     fontFamily: DccFontFamily.productSans,
     buttonTheme: _lightButtonTheme,
-    appBarTheme: _lightAppBarTheme, colorScheme: _lightColorScheme.copyWith(secondary: _lightAccentColor).copyWith(surface: _lightBackgroundColor),
+    appBarTheme: _lightAppBarTheme,
+    colorScheme: _lightColorScheme
+        .copyWith(secondary: _lightAccentColor)
+        .copyWith(surface: _lightBackgroundColor),
   );
 }

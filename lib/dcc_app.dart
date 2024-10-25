@@ -8,6 +8,7 @@ import 'package:dcc/style/dcc_themes.dart';
 import 'package:dcc/widgets/bloc_sub_state/bloc_sub_state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localization/flutter_localization.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class DccApp extends StatelessWidget {
   Widget loading() => Center(child: CircularProgressIndicator());
@@ -28,21 +29,18 @@ class DccApp extends StatelessWidget {
           supportedLocales: DccLocalizations.supportedLocales,
           localizationsDelegates: [
             DccLocalizations.delegate,
-
-            //Built-in localization of basic text for Material widgets (means those default Material widget such as alert dialog icon text)
-            // GlobalMaterialLocalizations.delegate,
-            // //Built-in localization for text direction LTR/RTL
-            // GlobalWidgetsLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
           ],
           localeResolutionCallback: (locale, supportedLocales) {
             for (var supportedLocale in supportedLocales) {
-              if (supportedLocale.languageCode == locale?.languageCode ||
+              if (supportedLocale.languageCode == locale?.languageCode &&
                   supportedLocale.countryCode == locale?.countryCode) {
                 return supportedLocale;
               }
             }
-            //if the locale from the mobile device is not supported yet,
-            //user the first one from the list (in our case, that will be English)
+
             return supportedLocales.first;
           },
           initialRoute: '/initial',

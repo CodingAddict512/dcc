@@ -9,14 +9,14 @@ import 'package:dcc/widgets/pickup_details/edit_button.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:provider/provider.dart' show StreamProvider;
+import 'package:provider/provider.dart' show Provider, StreamProvider;
 
 class PickupDetails extends StatelessWidget {
   Widget loading() => Center(child: CircularProgressIndicator());
 
   @override
   Widget build(BuildContext context) {
-    final pickupsCubit = context.watch<PickupsCubit>();
+    final pickupsCubit = Provider.of<PickupsCubit>(context);
     final pickupStream = pickupsCubit.stream
         .where((state) => state is PickupsLoaded)
         .map((state) => (state as PickupsLoaded).pickup);

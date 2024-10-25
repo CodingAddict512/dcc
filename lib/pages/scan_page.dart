@@ -7,6 +7,7 @@ import 'package:dcc/widgets/bloc_sub_state/bloc_sub_state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 
 class ScanPage extends StatefulWidget {
@@ -45,8 +46,8 @@ class _ScanPageState extends State<ScanPage> {
       controller.scannedDataStream.first.then((scanData) {
         final otpCodeParser = OTPCodeParser();
         if (otpCodeParser.parse(scanData.code!)) {
-          final userCubit = context.watch<IUserCubit>();
-          // Start the login; if it fails, then the login widget will pickup it up.
+          final userCubit = Provider.of<IUserCubit>(context, listen: false);
+
           userCubit.otpLogin(otpCodeParser.email!, otpCodeParser.otp!,
               otpCodeParser.verifyUrl!);
           navigator.pop(true);

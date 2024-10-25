@@ -4,6 +4,7 @@ import 'package:dcc/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class NoteEdit extends StatelessWidget {
   final TextEditingController noteController;
@@ -11,7 +12,7 @@ class NoteEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pickupEditCubit = context.watch<PickupEditCubit>();
+    final pickupEditCubit = Provider.of<PickupEditCubit>(context);
 
     pickupEditCubit.state.ifState<PickupEditLoaded>(
       withState: (state) {

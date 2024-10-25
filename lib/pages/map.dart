@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator_platform_interface/src/errors/permission_denied_exception.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
+import 'package:provider/provider.dart';
 
 class MapPage extends StatefulWidget implements NavFragment {
   @override
@@ -30,8 +31,8 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    final pickupsCubit = context.watch<PickupsCubit>();
-    final geoLocationCubit = context.watch<GeoLocationCubit>();
+    final pickupsCubit = Provider.of<PickupsCubit>(context);
+    final geoLocationCubit = Provider.of<GeoLocationCubit>(context);
 
     Future<LatLng> getAndUpdateCurrLocation() async {
       try {

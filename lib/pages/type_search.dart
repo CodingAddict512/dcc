@@ -6,6 +6,7 @@ import 'package:dcc/widgets/type_search/type_search_results.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class TypeSearch extends StatefulWidget {
   TypeSearch();
@@ -27,7 +28,8 @@ class TypeSearchState extends State<TypeSearch> {
     final navigator = Navigator.of(context);
 
     Future<List<FinalDisposition>> search(String query) async {
-      final finalDispositionEditCubit = context.watch<FinalDispositionCubit>();
+      final finalDispositionEditCubit =
+          Provider.of<FinalDispositionCubit>(context);
       return finalDispositionEditCubit.state
           .ifState<FinalDispositionStateLoaded>(
         withState: (state) async {

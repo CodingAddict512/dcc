@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class SavePickupRouteButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -24,9 +25,9 @@ class SavePickupRouteButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final carsCubit = context.watch<CarsCubit>();
-    final routesCubit = context.watch<RoutesCubit>();
-    final userCubit = context.watch<IUserCubit>();
+    final carsCubit = Provider.of<CarsCubit>(context);
+    final routesCubit = Provider.of<RoutesCubit>(context);
+    final userCubit = Provider.of<IUserCubit>(context);
     final localizations = DccLocalizations.of(context);
     final navigator = Navigator.of(context);
 

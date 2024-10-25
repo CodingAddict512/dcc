@@ -7,6 +7,7 @@ import 'package:dcc/widgets/settings/theme_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class ThemeSelection extends StatelessWidget {
   Widget loading() => Center(child: CircularProgressIndicator());
@@ -29,7 +30,8 @@ class ThemeSelection extends StatelessWidget {
           builder: (context) => ThemeDialog(),
         );
         if (result is ThemeMode) {
-          context.watch<SettingsCubit>().setThemeMode(result);
+          Provider.of<SettingsCubit>(context, listen: false)
+              .setThemeMode(result);
         }
       },
       leading: Icon(Icons.brightness_6),

@@ -7,6 +7,7 @@ import 'package:dcc/localization/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class SavePickupButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -16,8 +17,8 @@ class SavePickupButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pickupEditCubit = context.watch<PickupEditCubit>();
-    final routesCubit = context.watch<RoutesCubit>();
+    final pickupEditCubit = Provider.of<PickupEditCubit>(context);
+    final routesCubit = Provider.of<RoutesCubit>(context);
     final localizations = DccLocalizations.of(context);
     final navigator = Navigator.of(context);
 

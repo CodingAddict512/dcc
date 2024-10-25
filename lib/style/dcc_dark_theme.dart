@@ -2,10 +2,13 @@ import 'package:dcc/style/dcc_font_family.dart';
 import 'package:flutter/material.dart';
 
 class DccDarkTheme {
-  static final _darkPrimaryColor = Color(0xff1C73E8);
+  static final _darkPrimaryColor = Colors.white;
+  // static final _darkPrimaryColor = Color(0xff1C73E8);
   static final _darkPrimaryColorLight = Color(0xff1a73e8);
-  static final _darkPrimaryColorDark = Color(0xff002984);
+  static final _darkPrimaryColorDark = Colors.white;
+  // static final _darkPrimaryColorDark = Color(0xff002984);
   static final _darkAccentColor = _darkPrimaryColorLight;
+
   static final _darkBackgroundColor = Color(0xff0d0d0f);
   static final _darkBackgroundColorLight = Color(0xff1a1a1c);
 
@@ -23,7 +26,7 @@ class DccDarkTheme {
 
   static final _darkButtonTheme = ButtonThemeData(
     buttonColor: _darkPrimaryColor,
-    textTheme: ButtonTextTheme.primary,
+    textTheme: ButtonTextTheme.accent,
   );
 
   static final _darkAppBarTheme = AppBarTheme(
@@ -53,6 +56,9 @@ class DccDarkTheme {
     buttonTheme: _darkButtonTheme,
     appBarTheme: _darkAppBarTheme,
     bottomNavigationBarTheme: _darkBottomNavigationBarTheme,
-    floatingActionButtonTheme: _darkFloatingActionButtonTheme, colorScheme: _darkColorScheme.copyWith(secondary: _darkAccentColor).copyWith(surface: _darkBackgroundColor),
+    floatingActionButtonTheme: _darkFloatingActionButtonTheme,
+    colorScheme: _darkColorScheme
+        .copyWith(secondary: _darkAccentColor)
+        .copyWith(surface: _darkBackgroundColor),
   );
 }

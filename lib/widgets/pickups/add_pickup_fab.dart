@@ -30,18 +30,19 @@ import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 // import 'package:uuid/uuid_util.dart';
 
 class AddPickupFab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final userCubit = context.watch<IUserCubit>();
-    final metricTypeCubit = context.watch<MetricTypeCubit>();
-    final finalDispositionCubit = context.watch<FinalDispositionCubit>();
-    final routesCubit = context.watch<RoutesCubit>();
-    final pickupCubit = context.watch<PickupsCubit>();
-    final customersCubit = context.watch<CustomersCubit>();
+    final userCubit = Provider.of<IUserCubit>(context);
+    final metricTypeCubit = Provider.of<MetricTypeCubit>(context);
+    final finalDispositionCubit = Provider.of<FinalDispositionCubit>(context);
+    final routesCubit = Provider.of<RoutesCubit>(context);
+    final pickupCubit = Provider.of<PickupsCubit>(context);
+    final customersCubit = Provider.of<CustomersCubit>(context);
     final localizations = DccLocalizations.of(context);
 
     // bool showL10nErrorMessage(String message) {

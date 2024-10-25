@@ -7,6 +7,7 @@ import 'package:dcc/widgets/settings/theme_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatelessWidget {
   Widget _logout() {
@@ -22,7 +23,7 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userCubit = context.watch<IUserCubit>();
+    final userCubit = Provider.of<IUserCubit>(context);
 
     List<Widget> appBarActions = [];
 

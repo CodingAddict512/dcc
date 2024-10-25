@@ -7,6 +7,7 @@ import 'package:dcc/widgets/location_search/location_search_results.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class LocationSearch extends StatefulWidget {
   final List<Location> locations;
@@ -28,7 +29,7 @@ class LocationSearchState extends State<LocationSearch> {
 
   @override
   Widget build(BuildContext context) {
-    final geoLocationCubit = context.watch<GeoLocationCubit>();
+    final geoLocationCubit = Provider.of<GeoLocationCubit>(context);
     final localizations = DccLocalizations.of(context);
     final navigator = Navigator.of(context);
 

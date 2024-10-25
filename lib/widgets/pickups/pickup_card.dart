@@ -7,6 +7,7 @@ import 'package:dcc/style/dcc_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class PickupCard extends StatelessWidget {
   static const _padding = 16.0;
@@ -23,7 +24,7 @@ class PickupCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pickupsCubit = context.watch<PickupsCubit>();
+    final pickupsCubit = Provider.of<PickupsCubit>(context);
     final navigator = Navigator.of(context);
 
     Widget _thumbnail() {

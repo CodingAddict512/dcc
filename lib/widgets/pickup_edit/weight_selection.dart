@@ -4,6 +4,7 @@ import 'package:dcc/widgets/flexible_weight_info.dart';
 import 'package:dcc/widgets/register_weight.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class WeightSelection extends StatelessWidget {
   @override
@@ -24,7 +25,7 @@ class WeightSelection extends StatelessWidget {
                 ),
               );
               if (result is AmountMetricWeight) {
-                context.watch<PickupEditCubit>().registerWeight(
+                Provider.of<PickupEditCubit>(context).registerWeight(
                     result.amount, result.metric, result.weight);
               }
             }

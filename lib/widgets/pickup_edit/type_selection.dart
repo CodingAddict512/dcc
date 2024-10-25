@@ -9,6 +9,7 @@ import 'package:dcc/widgets/bloc_sub_state/bloc_sub_state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class TypeSelection extends StatelessWidget {
   final bool enabled;
@@ -21,8 +22,9 @@ class TypeSelection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final finalDispositionEditCubit = context.watch<FinalDispositionCubit>();
-    final pickupEditCubit = context.watch<PickupEditCubit>();
+    final finalDispositionEditCubit =
+        Provider.of<FinalDispositionCubit>(context);
+    final pickupEditCubit = Provider.of<PickupEditCubit>(context);
     // final origPickup = pickupEditCubit.state
     //     .ifState<PickupEditLoaded>(withState: (s) => s.oldPickup);
     final origPickup = pickupEditCubit.state.ifState<PickupEditLoaded>(

@@ -7,6 +7,7 @@ import 'package:dcc/widgets/bloc_sub_state/bloc_sub_state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class DeveloperLoginPage extends StatelessWidget {
   final TextEditingController _apiKeyTextController =
@@ -26,7 +27,7 @@ class DeveloperLoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final userCubit = context.watch<IUserCubit>();
+    final userCubit = Provider.of<IUserCubit>(context);
     final navigator = Navigator.of(context);
 
     Widget _enterKeyPage() {

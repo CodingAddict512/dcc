@@ -5,8 +5,7 @@ import 'package:dcc/localization/app_localizations.dart';
 import 'package:dcc/widgets/bloc_sub_state/bloc_sub_state_builder.dart';
 import 'package:dcc/widgets/settings/language_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:dcc/extensions/compat.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class LanguageSelection extends StatelessWidget {
   Widget loading() => Center(child: CircularProgressIndicator());
@@ -23,15 +22,27 @@ class LanguageSelection extends StatelessWidget {
     }
 
     return ListTile(
+      // onTap: () async {
+      //   final result = await showDialog(
+      //     context: context,
+      //     builder: (context) => LanguageDialog(),
+      //   );
+      //   if (result is Locale) {
+      //     Provider.of<SettingsCubit>().setLanguageCode(result.languageCode);
+      //   }
+      // },
       onTap: () async {
         final result = await showDialog(
           context: context,
           builder: (context) => LanguageDialog(),
         );
+
         if (result is Locale) {
-          context.watch<SettingsCubit>().setLanguageCode(result.languageCode);
+          Provider.of<SettingsCubit>(context, listen: false)
+              .setLanguageCode(result.languageCode);
         }
       },
+
       leading: Icon(Icons.translate),
       title:
           Text(DccLocalizations.of(context)!.translate("settingsPageLanguage")),

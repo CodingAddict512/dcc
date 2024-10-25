@@ -8,7 +8,7 @@
 
 //   @override
 //   Widget build(BuildContext context) {
-//     InitializationCubit initializationCubit = context.watch<InitializationCubit>();
+//     InitializationCubit initializationCubit = Provider.of<InitializationCubit>();
 
 //     Widget loading(InitializationState state) {
 //       return Center(
@@ -67,12 +67,13 @@ import 'package:dcc/cubits/initialization_cubit.dart';
 import 'package:dcc/cubits/states/initialization_states.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 class InitializationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     InitializationCubit initializationCubit =
-        context.watch<InitializationCubit>();
+        Provider.of<InitializationCubit>(context);
 
     Widget loading(InitializationState state) {
       return Center(
