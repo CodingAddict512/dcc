@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dcc/cubits/pickups_cubit.dart';
 import 'package:dcc/cubits/states/external_nh_doc_state.dart';
 import 'package:dcc/data/respository_interface.dart';
-import 'package:dcc/models/file_format.dart';
+import 'package:dcc/models/file_format.dart'; // Ensure this is the correct import for FileFormat
 import 'package:dcc/models/pickup.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,14 +30,8 @@ class ExternalNhDocCubit extends Cubit<ExternalNhDocState> {
       final ext = p.extension(file.path);
       int length = await file.length();
       if (length >= maxSize) {
-        // We deliberately use .ceil vs. .floor to ensure the error message
-        // always make sizeInKb seem at least as large as maxSizeInKb if there
-        // is an issue (i.e. rounding will never cause a message to say
-        // that sizeInKb is smaller than maxSizeInKb).
         final sizeInKb = (length / 1024).ceil();
         final maxSizeInKb = (maxSize / 1024).floor();
-        // FIXME: Need better translation support (we cannot do parameterized
-        // translations at the moment).
         final error = ExternalNhDocUploadError(
             message:
                 "File is too large - must be smaller than $maxSizeInKb Kb, but is $sizeInKb Kb");
@@ -46,7 +40,7 @@ class ExternalNhDocCubit extends Cubit<ExternalNhDocState> {
       }
 
       await repository.uploadNhDocImage(file, pickup.driverId, pickup.id);
-      pickupsCubit.registerNhDocFormat(FileFormatHelper.fromExtension(ext));
+      pickupsCubit.registerNhDocFormat(FileFormatExtension.fromString(ext));
       final loaded = ExternalNhDocDownloaded(file: file);
       emit(loaded);
       await this._loadImage(file, pickup);
@@ -65,7 +59,8 @@ class ExternalNhDocCubit extends Cubit<ExternalNhDocState> {
   Future<void> downloadNhDocImage(Pickup pickup) async {
     try {
       emit(ExternalNhDocLoading());
-      final ext = FileFormatHelper.toExtension(pickup.externalNHDocFormat!);
+      final ext = pickup.externalNHDocFormat?.toExtension() ??
+          ''; // Correct way to call the instance method
 
       File file =
           await repository.downloadNhDocImage(pickup.driverId, pickup.id, ext);

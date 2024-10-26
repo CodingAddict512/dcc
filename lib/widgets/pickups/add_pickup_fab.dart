@@ -208,7 +208,7 @@ class AddPickupFab extends StatelessWidget {
                 );
             if (allOk) {
               routesCubit.state.ifState<RoutesLoaded>(
-                withState: (s) => routesCubit.closeRoute(),
+                withState: (s) => routesCubit.closeRoute(s.route.id),
                 orElse: (s) =>
                     showL10nErrorMessage("pickupFabCompleteRouteErrorLoading"),
               );

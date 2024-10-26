@@ -16,6 +16,21 @@ import 'package:dcc/models/transporter.dart';
 import 'package:flutter/material.dart';
 
 class FirestoreService {
+  static Stream<List<T>> collectionStream<T>({
+    required String path,
+    required T Function(DocumentSnapshot) builder,
+  }) {
+    final collection = FirebaseFirestore.instance.collection(path);
+    return collection
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => builder(doc)).toList());
+  }
+
+  static Future<List<Pickup>> collectionGet(String path) async {
+    final snapshot = await FirebaseFirestore.instance.collection(path).get();
+    return snapshot.docs.map((doc) => Pickup.fromFirestore(doc)).toList();
+  }
+
   //Method to retrieve all route items from the same user based on driver
   static Stream<List<PickupRoute>> routesStream({
     required String driverId,

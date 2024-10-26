@@ -3,8 +3,18 @@ enum Status {
   ASSIGNED,
   STARTED,
   SUBMITTED,
-  /* Only set by the backend (SUBMITTED -> {COLLECTED,REJECTED}) */
   COLLECTED,
-  /* Only set by the backend (SUBMITTED -> {COLLECTED,REJECTED}) */
-  REJECTED,
+  REJECTED;
+
+  // Convert Firestore string to Status
+  static Status fromString(String status) {
+    return Status.values.firstWhere(
+        (e) => e.toString().split('.').last == status,
+        orElse: () => Status.DRAFT);
+  }
+
+  // Convert Status to Firestore string
+  String toFirestoreString() {
+    return toString().split('.').last;
+  }
 }

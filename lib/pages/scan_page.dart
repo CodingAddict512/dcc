@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dcc/cubits/states/user_state.dart';
 import 'package:dcc/cubits/user_cubit.dart';
 import 'package:dcc/models/otp_code_parser.dart';
+import 'package:dcc/pages/home.dart';
 import 'package:dcc/widgets/bloc_sub_state/bloc_sub_state_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:dcc/extensions/compat.dart';
@@ -40,19 +41,46 @@ class _ScanPageState extends State<ScanPage> {
     final navigator = Navigator.of(context);
     final theme = Theme.of(context);
 
+    // void _onQRViewCreated(QRViewController controller) {
+    //   this.controller = controller;
+
+    //   controller.scannedDataStream.first.then((scanData) {
+    //     final otpCodeParser = OTPCodeParser();
+    //     if (otpCodeParser.parse(scanData.code!)) {
+    //       final userCubit = Provider.of<IUserCubit>(context, listen: false);
+
+    //       userCubit.otpLogin(otpCodeParser.email!, otpCodeParser.otp!,
+    //           otpCodeParser.verifyUrl!);
+    //       navigator.pop(true);
+    //     } else {
+    //       navigator.pop(false);
+    //     }
+    //   });
+    // }
     void _onQRViewCreated(QRViewController controller) {
       this.controller = controller;
 
       controller.scannedDataStream.first.then((scanData) {
         final otpCodeParser = OTPCodeParser();
-        if (otpCodeParser.parse(scanData.code!)) {
+        print("Muntaqim Mehdi Shah");
+        if (scanData.code != null && otpCodeParser.parse(scanData.code!)) {
+          print("Muntaqim Mehdi Shah");
           final userCubit = Provider.of<IUserCubit>(context, listen: false);
-
-          userCubit.otpLogin(otpCodeParser.email!, otpCodeParser.otp!,
-              otpCodeParser.verifyUrl!);
-          navigator.pop(true);
+          print("Muntaqim Mehdi Shah");
+          userCubit.otpLogin(
+            otpCodeParser.email!,
+            otpCodeParser.otp!,
+            otpCodeParser.verifyUrl!,
+          );
+          print("Muntaqim Mehdi");
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ));
+          // Navigator.pop(context, true); // Pop with `true` if scan is valid
         } else {
-          navigator.pop(false);
+          Navigator.pop(context, false); // Pop with `false` if scan is invalid
         }
       });
     }

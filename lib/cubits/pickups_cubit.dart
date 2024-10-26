@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dcc/cubits/routes_cubit.dart';
 import 'package:dcc/cubits/states/pickups_state.dart';
@@ -8,14 +6,12 @@ import 'package:dcc/cubits/states/routes_state.dart';
 import 'package:dcc/cubits/states/user_state.dart';
 import 'package:dcc/cubits/user_cubit.dart';
 import 'package:dcc/data/repositories/pickup_repository_interface.dart';
-import 'package:dcc/models/file_format.dart';
-import 'package:dcc/models/metric_type.dart';
 import 'package:dcc/models/pickup.dart';
-import 'package:dcc/models/pickup_with_references.dart';
 import 'package:dcc/models/status.dart';
-// import 'package:device_info/device_info.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../models/file_format.dart';
+import '../models/metric_type.dart';
 
 class PickupsCubit extends Cubit<PickupsState> {
   final IPickupRepository pickupRepository;
@@ -23,99 +19,117 @@ class PickupsCubit extends Cubit<PickupsState> {
   final IUserCubit userCubit;
   StreamSubscription? _listener;
 
+  // Constructor
   PickupsCubit({
     required this.pickupRepository,
     required this.routesCubit,
     required this.userCubit,
   }) : super(PickupsInitial()) {
+    // Listen to the RoutesCubit state changes
     routesCubit.stream.listen((state) {
-      state.ifState<RoutesLoaded>(
-        withState: (state) {
-          updateStream();
-        },
-        orElse: (state) {},
-      );
+      if (state is RoutesLoaded) {
+        print("RoutesLoaded detected, updating pickup stream.");
+        updateStream();
+      }
     });
   }
 
+  // Factory method to create the cubit from context
   factory PickupsCubit.fromContext(BuildContext context) => PickupsCubit(
         userCubit: context.read<IUserCubit>(),
         pickupRepository: context.read<IPickupRepository>(),
         routesCubit: context.read<RoutesCubit>(),
       );
 
+  // Update the pickup stream based on user and routes state
   void updateStream() async {
+    print("updateStream called in PickupsCubit");
+
     final routesCubitState = routesCubit.state;
     final userCubitState = userCubit.state;
 
-    /* If we were listening on a stream stop it now */
-    await _listener!.cancel();
+    // Cancel previous listener
+    await _listener?.cancel();
     _listener = null;
 
     if (userCubitState is UserLoggedIn && routesCubitState is RoutesLoaded) {
-      Pickup oldPickup = state.ifState<PickupsLoaded>(
-        withState: (state) => state.pickup,
-        orElse: (state) => null,
-      );
+      print("User is logged in and routes are loaded.");
       emit(PickupsLoading());
 
-      Stream<List<PickupWithReferences>> pickupsStream =
-          pickupRepository.getPickupsWithRefs(
-        userCubitState.driverId,
-        routesCubitState.route.id,
+      try {
+        // Fetch pickups from the repository
+        final pickups = await pickupRepository.getPickups();
+        print("Fetched pickups: $pickups"); // Debug output
+
+        // Emit the loaded state with the pickups
+        emit(PickupsLoaded(pickups: pickups, pickup: pickups.first));
+      } catch (error) {
+        // Emit error state if fetching fails
+        emit(PickupsError("Error loading pickups: ${error.toString()}"));
+      }
+    } else {
+      print("User is not logged in or routes are not loaded.");
+      emit(PickupsError("User not logged in or routes not loaded."));
+    }
+  }
+
+  Future<void> savePickup(Pickup newPickup) async {
+    await _setNewPickup(newPickup);
+  }
+
+  Future<void> deleteDraftPickup(Pickup pickup) async {
+    if (pickup.status != Status.DRAFT) return;
+
+    state.ifState<PickupsLoaded>(
+      withState: (state) async {
+        await pickupRepository.deletePickup(pickup);
+        // Call RoutesCubit to remove draft pickup
+        await routesCubit.removeDraftPickupByIds([pickup.id]);
+      },
+      orElse: (state) {},
+    );
+  }
+
+  Future<void> _setNewPickup(Pickup newPickup) async {
+    final userCubitState = userCubit.state;
+    final routesCubitState = routesCubit.state;
+
+    if (userCubitState is UserLoggedIn && routesCubitState is RoutesLoaded) {
+      state.ifState<PickupsLoaded>(
+        withState: (state) async {
+          await pickupRepository.setPickup(newPickup);
+
+          if (newPickup.originalStatus == Status.DRAFT) {
+            await routesCubit.addNewPickup(newPickup);
+          }
+
+          selectPickup(newPickup);
+        },
+        orElse: (state) {},
       );
-
-      final stream = pickupsStream.asyncMap((pickups) {
-        return Future.wait(
-          pickups.map((p) => Pickup.fromPickupWithReferences(p)),
-        );
-      });
-      _listener = stream.listen((pickups) {
-        final allActiveIds = pickups.map((event) => event.id).toSet();
-        List<DocumentReference> draftOrders =
-            routesCubitState.route?.draftOrders ?? [];
-        final absentIds = draftOrders
-            .where((element) => !allActiveIds.contains(element.id))
-            .map((e) => e.id)
-            .toList();
-
-        if (absentIds.isNotEmpty) {
-          routesCubit.removeDraftPickupByIds(absentIds);
-        }
-
-        state.ifState<PickupsLoaded>(
-          withState: (state) {
-            final newSelectedPickup = pickups.firstWhere(
-              (element) => element.id == state.pickup.id,
-            );
-
-            emit(state.copyWith(pickups: pickups, pickup: newSelectedPickup));
-          },
-          orElse: (state) {},
-        );
-        state.ifState<PickupsLoading>(
-          withState: (state) {
-            Pickup selectedPickup = oldPickup;
-            if (selectedPickup == null && pickups.isNotEmpty) {
-              selectedPickup = pickups.first;
-            }
-            final loaded = PickupsLoaded(
-              pickup: selectedPickup,
-              pickups: pickups,
-            );
-            emit(loaded);
-          },
-          orElse: (state) {},
-        );
-      });
     }
   }
 
   void selectPickup(Pickup pickup) {
     state.ifState<PickupsLoaded>(
+      withState: (state) {
+        emit(state.copyWith(pickup: pickup));
+      },
+      orElse: (state) {},
+    );
+  }
+
+  void registerWeight(
+      int newAmount, MetricType newMetric, String weight) async {
+    state.ifState<PickupsLoaded>(
       withState: (state) async {
-        final loaded = state.copyWith(pickup: pickup);
-        emit(loaded);
+        final newPickup = state.pickup.copyWith(
+          actualAmount: newAmount,
+          actualMetric: newMetric.metric,
+          actualMetricTypeId: newMetric.id,
+          actualRegisteredWeight: weight,
+        );
+        await _setNewPickup(newPickup);
       },
       orElse: (state) {},
     );
@@ -124,8 +138,6 @@ class PickupsCubit extends Cubit<PickupsState> {
   void startPickup() async {
     state.ifState<PickupsLoaded>(
       withState: (state) async {
-        // When going from DRAFT to non-DRAFT then we set the ID to "PENDING".
-        // This informs the backend that it should allocate an ID for the order.
         String newOrderId = state.pickup.status == Status.DRAFT
             ? "PENDING"
             : state.pickup.orderId;
@@ -137,48 +149,11 @@ class PickupsCubit extends Cubit<PickupsState> {
     );
   }
 
-  void resetPickup() async {
-    state.ifState<PickupsLoaded>(
-      withState: (state) async {
-        final newPickup = state.pickup.copyWith(status: Status.ASSIGNED);
-        await _setNewPickup(newPickup);
-      },
-      orElse: (state) {},
-    );
-  }
-
-  // Future<String> _getDeviceID() async {
-  //   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-  //   String id = null;
-  //   if (Platform.isAndroid) {
-  //     AndroidDeviceInfo androidDeviceInfo = await deviceInfo.androidInfo;
-  //     id = androidDeviceInfo.androidId;
-  //   } else if (Platform.isIOS) {
-  //     IosDeviceInfo iosDeviceInfo = await deviceInfo.iosInfo;
-  //     id = iosDeviceInfo.identifierForVendor;
-  //   }
-  //   return id;
-  // }
-
-  Future<void> deleteDraftPickup() async {
-    state.ifState<PickupsLoaded>(
-      withState: (state) async {
-        final pickup = state.pickup;
-        if (pickup.status != Status.DRAFT) {
-          return;
-        }
-        _deletePickup(pickup);
-      },
-      orElse: (state) {},
-    );
-  }
-
   void finishPickup() async {
     state.ifState<PickupsLoaded>(
       withState: (state) async {
         final pickup = state.pickup;
         final collectedTime = pickup.collectedTime ?? Timestamp.now();
-        // String deviceId = await _getDeviceID();
         final newPickup = pickup.copyWith(
           status: Status.SUBMITTED,
           collectedTime: collectedTime,
@@ -190,7 +165,6 @@ class PickupsCubit extends Cubit<PickupsState> {
               pickup.actualFinalDisposition ?? pickup.finalDisposition,
           actualFinalDispositionId:
               pickup.actualFinalDispositionId ?? pickup.finalDispositionId,
-          // deviceId: deviceId,
         );
         await _setNewPickup(newPickup);
       },
@@ -198,19 +172,10 @@ class PickupsCubit extends Cubit<PickupsState> {
     );
   }
 
-  void registerWeight(
-    int newAmount,
-    MetricType newMetric,
-    String weight,
-  ) async {
+  void editNote(String note) async {
     state.ifState<PickupsLoaded>(
       withState: (state) async {
-        final newPickup = state.pickup.copyWith(
-          actualAmount: newAmount,
-          actualMetric: newMetric.metric,
-          actualMetricTypeId: newMetric.id,
-          actualRegisteredWeight: weight,
-        );
+        final newPickup = state.pickup.copyWith(note: note);
         await _setNewPickup(newPickup);
       },
       orElse: (state) {},
@@ -229,70 +194,24 @@ class PickupsCubit extends Cubit<PickupsState> {
     );
   }
 
-  void editNote(String note) async {
-    state.ifState<PickupsLoaded>(
-      withState: (state) async {
-        final newPickup = state.pickup.copyWith(note: note);
-        await _setNewPickup(newPickup);
-      },
-      orElse: (state) {},
-    );
+  bool hasSelectedRoute() {
+    // Check if any route is selected
+    return routesCubit.state is RoutesLoaded &&
+        routesCubit.selectedRouteId != null;
   }
 
-  Future<void> savePickup(Pickup newPickup) async {
-    await _setNewPickup(newPickup);
+  Future<void> addNewRoute(/* Parameters for new route */) async {
+    // Implement logic to add a new route
   }
 
-  Future<void> _deletePickup(Pickup pickup) async {
-    state.ifState<PickupsLoaded>(
-      withState: (state) async {
-        await pickupRepository.deletePickup(pickup);
-        await routesCubit.removeDraftPickupByIds([pickup.id]);
-      },
-      orElse: (state) {},
-    );
-  }
-
-  Future<void> _setNewPickup(Pickup newPickup) async {
-    final userCubitState = userCubit.state;
-    final routesCubitState = routesCubit.state;
-
-    if (userCubitState is UserLoggedIn && routesCubitState is RoutesLoaded) {
-      state.ifState<PickupsLoaded>(
-        // withState: (state) async {
-        //   await pickupRepository.setPickup(newPickup);
-        //   if (newPickup.originalStatus == Status.DRAFT) {
-        //     await routesCubit.addNewPickup(newPickup);
-        //   }
-        //   final updatedPickup = newPickup.copyWith(
-        //     originalStatus: newPickup.status,
-        //   );
-        //   await selectPickup(updatedPickup);
-        // },
-        withState: (state) async {
-          await pickupRepository.setPickup(newPickup);
-
-          if (newPickup.originalStatus == Status.DRAFT) {
-            await routesCubit.addNewPickup(newPickup);
-          }
-
-          // Update the pickup status
-          final updatedPickup = newPickup.copyWith(
-            originalStatus: newPickup.status,
-          );
-
-          // Call selectPickup without awaiting or assigning the result
-          selectPickup(updatedPickup);
-        },
-
-        orElse: (state) {},
-      );
-    }
+  Future<void> closeRoute(/* Parameters for closing the route */) async {
+    // Implement logic to close the route
   }
 
   @override
   Future<void> close() async {
-    await _listener!.cancel();
+    await _listener?.cancel();
+    print("PickupsCubit closed and listener cancelled.");
     return super.close();
   }
 }

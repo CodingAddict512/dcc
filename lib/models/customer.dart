@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dcc/models/location.dart';
+import 'package:dcc/models/status.dart';
 
 class Customer {
   final String id;
@@ -13,8 +14,8 @@ class Customer {
   final String notes;
 
   Customer({
-    required this.name,
     required this.id,
+    required this.name,
     required this.primaryLocation,
     required this.streetName,
     required this.streetBuildingIdentifier,
@@ -28,18 +29,21 @@ class Customer {
     Map<String, dynamic> data,
     String documentId,
   ) async {
+    final Location primaryLocation = data["primaryLocation"] != null
+        ? await Location.fromReference(data["primaryLocation"]) ??
+            (throw Exception("primaryLocation could not be resolved"))
+        : throw Exception("primaryLocation is required but missing");
+
     return Customer(
       id: documentId,
-      name: data["name"],
-      // primaryLocation: await Location.fromReference(data["primaryLocation"]),
-      primaryLocation: data["primaryLocation"],
-
-      streetName: data["streetName"],
-      streetBuildingIdentifier: data["streetBuildingIdentifier"],
-      postCodeIdentifier: data["postCodeIdentifier"],
-      districtName: data["districtName"],
+      name: data["name"] ?? "",
+      primaryLocation: primaryLocation,
+      streetName: data["streetName"] ?? "",
+      streetBuildingIdentifier: data["streetBuildingIdentifier"] ?? "",
+      postCodeIdentifier: data["postCodeIdentifier"] ?? "",
+      districtName: data["districtName"] ?? "",
       certificateAbNr: data["certificateAbNr"] ?? "",
-      notes: data["notes"],
+      notes: data["notes"] ?? "",
     );
   }
 
@@ -47,7 +51,6 @@ class Customer {
     final snapshot = await reference.get();
     final data = snapshot.data();
 
-    // return Customer.fromMap(snapshot.data()??"", reference.id);
     if (data is Map<String, dynamic>) {
       return Customer.fromMap(data, reference.id);
     } else {

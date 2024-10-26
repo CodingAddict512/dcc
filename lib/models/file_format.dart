@@ -5,34 +5,29 @@ enum FileFormat {
   NONE,
 }
 
-class FileFormatHelper {
-  /**
-   * Extension must include '.' e.g. '.png'
-   */
-  static FileFormat fromExtension(String extension) {
-    switch (extension) {
-      case '.png':
+extension FileFormatExtension on FileFormat {
+  static FileFormat fromString(String format) {
+    switch (format.toUpperCase()) {
+      case 'PNG':
         return FileFormat.PNG;
-      case '.jpg':
+      case 'JPG':
         return FileFormat.JPG;
-      case '.jpeg':
+      case 'JPEG':
         return FileFormat.JPEG;
       default:
         return FileFormat.NONE;
     }
   }
 
-  /**
-   * Extension will include '.' e.g. '.png'
-   */
-  static String toExtension(FileFormat format) {
-    switch (format) {
+  String toExtension() {
+    switch (this) {
       case FileFormat.PNG:
         return '.png';
       case FileFormat.JPG:
         return '.jpg';
       case FileFormat.JPEG:
         return '.jpeg';
+      case FileFormat.NONE:
       default:
         return ''; // Unknown FileFormat
     }

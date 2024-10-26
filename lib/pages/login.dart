@@ -150,11 +150,12 @@ class LoginPage extends StatelessWidget {
           if (state is UserError) {
             String message = "";
             if (state.errorType != UserErrorType.UNKNOWN) {
-              message = localization!.translate(state.errorType.name);
+              message = DccLocalizations.of(context)!.translate(
+                  "userErrorType/${state.errorType.toString().split('.').last}");
             }
             showErrorSnackBar(
               context,
-              message ?? state.message,
+              message,
             );
           } else if (state is UserLoggedIn) {
             returnToPreviousPage();

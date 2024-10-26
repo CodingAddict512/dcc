@@ -7,6 +7,12 @@ import 'package:dcc/models/pickup.dart';
 import 'package:dcc/models/pickup_with_references.dart';
 
 class PickupRepository implements IPickupRepository {
+  @override
+  Future<List<Pickup>> getPickups() async {
+    return await FirestoreService.collectionGet(FirestorePath.pickups());
+  }
+
+  @override
   Stream<List<PickupWithReferences>> getPickupsWithRefs(
       String driverId, String routeId) {
     DocumentReference routeRef =
@@ -17,9 +23,11 @@ class PickupRepository implements IPickupRepository {
     );
   }
 
+  @override
   Future<PickupWithReferences> setPickup(Pickup pickup) =>
       FirestoreService.setPickup(pickup: pickup);
 
+  @override
   Future<void> deletePickup(Pickup pickup) =>
       FirestoreService.deletePickup(pickup: pickup);
 }

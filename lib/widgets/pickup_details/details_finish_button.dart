@@ -35,7 +35,7 @@ class DetailsFinishButton extends StatelessWidget {
     Widget deleteDraftButton() {
       return ElevatedButton.icon(
         onPressed: () {
-          pickupsCubit.deleteDraftPickup();
+          pickupsCubit.deleteDraftPickup(pickup);
           navigator.pop();
         },
         icon: Icon(Icons.delete_forever),

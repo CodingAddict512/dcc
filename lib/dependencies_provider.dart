@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dcc/abstract_dependencies_provider.dart';
 import 'package:dcc/cubits/user_cubit.dart';
 import 'package:dcc/data/repositories/final_disposition_repository_interface.dart';
@@ -42,14 +43,17 @@ class DependenciesProvider extends AbstractDependenciesProvider {
   ) : super(child: child);
 
   factory DependenciesProvider.fromChild({@required child}) {
-    ISharedPreferencesRepository sharedPreferencesRepository = SharedPreferencesRepository();
+    ISharedPreferencesRepository sharedPreferencesRepository =
+        SharedPreferencesRepository();
     return DependenciesProvider(
       Repository(),
       SecureStorageRepository(),
       sharedPreferencesRepository,
       UserRepository(sharedPreferencesRepository: sharedPreferencesRepository),
       PickupRepository(),
-      RoutesRepository(),
+      RoutesRepository(
+        firestore: FirebaseFirestore.instance,
+      ),
       MetricTypeRepository(),
       FinalDispositionRepository(),
       child,
@@ -60,14 +64,18 @@ class DependenciesProvider extends AbstractDependenciesProvider {
 
   Widget repositories({child}) {
     return MultiProvider(providers: [
-      Provider<ISharedPreferencesRepository>(create: (context) => _sharedPreferencesRepository),
+      Provider<ISharedPreferencesRepository>(
+          create: (context) => _sharedPreferencesRepository),
       Provider<IRepository>(create: (context) => _repository),
-      Provider<ISecureStorageRepository>(create: (context) => _secureStorageRepository),
+      Provider<ISecureStorageRepository>(
+          create: (context) => _secureStorageRepository),
       Provider<IUserRepository>(create: (context) => _userRepository),
       Provider<IPickupRepository>(create: (context) => _pickupRepository),
       Provider<IRoutesRepository>(create: (context) => _routesRepository),
-      Provider<IMetricTypeRepository>(create: (context) => _metricTypeRepository),
-      Provider<IFinalDispositionRepository>(create: (context) => _finalDispositionRepository),
+      Provider<IMetricTypeRepository>(
+          create: (context) => _metricTypeRepository),
+      Provider<IFinalDispositionRepository>(
+          create: (context) => _finalDispositionRepository),
     ], child: child);
   }
 }
