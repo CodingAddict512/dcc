@@ -14,9 +14,9 @@ class _HomePageState extends State<HomePage> {
 
   static List<Widget> _pages = [
     PickupsPage(),
+
+    MapPage(),
     // Center(),
-    // MapPage(),
-    Center(),
   ];
 
   void _onNewNav(int index) {

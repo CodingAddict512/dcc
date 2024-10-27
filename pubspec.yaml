@@ -73,6 +73,7 @@ dependencies:
   freezed: ^2.5.7
   mockito: ^5.4.4
   fake_cloud_firestore: ^3.0.3
+  url_launcher: ^6.3.1
 
   # device_info: any
   meta: any

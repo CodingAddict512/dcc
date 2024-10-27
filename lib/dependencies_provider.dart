@@ -52,8 +52,8 @@ class DependenciesProvider extends AbstractDependenciesProvider {
       UserRepository(sharedPreferencesRepository: sharedPreferencesRepository),
       PickupRepository(),
       RoutesRepository(
-        firestore: FirebaseFirestore.instance,
-      ),
+          // firestore: FirebaseFirestore.instance,
+          ),
       MetricTypeRepository(),
       FinalDispositionRepository(),
       child,

@@ -104,24 +104,6 @@ class InitializationPage extends StatelessWidget {
     return Scaffold(
       appBar: null,
       body: BlocConsumer<InitializationCubit, InitializationState>(
-        // listener: (context, state) {
-        //   if (state is InitializationError) {
-        //     showErrorSnackBar(context, state.errorMessage);
-        //   } else if (state is InitializationUserNeedsReset) {
-        //     toLogin();
-        //   } else if (state is InitializationUserNoCredentials) {
-        //     toLogin();
-        //   } else if (state is InitializationComplete) {
-        //     toHome();
-        //   } else if (state is InitializationPendingExternalChangeState) {
-        //     showErrorSnackBar(
-        //       context,
-        //       "Stopped in state " +
-        //           state.toString() +
-        //           ", but we have no resume handler for that!?",
-        //     );
-        //   }
-        // },
         listener: (context, state) {
           print("Current state: $state"); // Log current state
           if (state is InitializationError) {

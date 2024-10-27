@@ -129,8 +129,8 @@ class RoutesCubit extends Cubit<RoutesState> {
           ..add(newRoute);
         final newState = state.copyWith(routes: updatedRoutes);
         emit(newState);
-        await routesRepository
-            .setRoutes(updatedRoutes); // Update to use setRoutes
+        // await routesRepository
+        //     .setRoutes(updatedRoutes); // Update to use setRoutes
       },
       orElse: (state) {},
     );
@@ -149,7 +149,7 @@ class RoutesCubit extends Cubit<RoutesState> {
 
         final newState = state.copyWith(routes: updatedRoutes);
         emit(newState);
-        await routesRepository.setRoutes(updatedRoutes);
+        // await routesRepository.setRoutes(updatedRoutes);
       },
       orElse: (state) {},
     );
