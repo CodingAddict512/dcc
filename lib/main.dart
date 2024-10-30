@@ -8,13 +8,7 @@ import 'dcc_app.dart';
 // void main() => runApp(ProdApp());
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: FirebaseOptions(
-        apiKey: 'AIzaSyA0oRNdU9lijtUrpcyyDHa6ZqCV6dDWBwU',
-        appId: '1:1020733915446:android:8dca93b62812b65e5c3397',
-        messagingSenderId: '1020733915446',
-        projectId: 'dcc-demo-environment'),
-  );
+  await Firebase.initializeApp();
   FirebaseFirestore.instance.settings = Settings(persistenceEnabled: true);
   runApp(ProdApp());
 }

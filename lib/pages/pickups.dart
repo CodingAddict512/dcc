@@ -14,6 +14,7 @@ import 'package:dcc/models/user_error_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
+import 'package:dcc/models/pickup_with_references.dart';
 
 import '../cubits/states/user_state.dart';
 import '../widgets/pickups/pickup_group.dart';
@@ -30,6 +31,7 @@ class PickupsPage extends StatefulWidget {
 class _PickupsPageState extends State<PickupsPage> {
   StreamSubscription? _userListener;
   StreamSubscription? _routeListener;
+  StreamSubscription? _pickupListener;
   List<Pickup> pickups = [];
   String errorMessage = "";
   bool isLoading = true;
@@ -77,7 +79,6 @@ class _PickupsPageState extends State<PickupsPage> {
     setState(() {
       isLoading = true; // Set loading to true while fetching routes
     });
-
     _routeListener = stream.listen((routes) {
       setState(() {
         // Assuming that the first route is the selected one
@@ -127,8 +128,13 @@ class _PickupsPageState extends State<PickupsPage> {
     // Check if user is logged in
     if (userCubit.state is UserLoggedIn) {
       try {
+        await _pickupListener?.cancel();
+    _pickupListener = null;
         final pickupRepository = context.read<IPickupRepository>();
-        pickups = await pickupRepository.getPickups();
+        Stream<List<PickupWithReferences>> ss =  pickupRepository.getPickupsWithRefs("q4s56SQu4ShdWRJAYKHmczgE5Ki2", "0b109105-3291-4194-8f37-6d662f5ebaa3");
+        _pickupListener = ss.listen((sk) {
+     print("hello $sk");
+    });
         print("Fetched pickups: $pickups");
       } catch (error) {
         // Handle specific Firestore permission-denied error
@@ -212,6 +218,7 @@ class _PickupsPageState extends State<PickupsPage> {
   void dispose() {
     _userListener?.cancel();
     _routeListener?.cancel();
+    _pickupListener?.cancel();
     super.dispose();
   }
 }

@@ -110,13 +110,10 @@ class InitializationPage extends StatelessWidget {
             showErrorSnackBar(context, state.errorMessage);
           } else if (state is InitializationUserNeedsReset) {
             toLogin();
-            print("Muntaqim Mehdi Shah Login To");
           } else if (state is InitializationUserNoCredentials) {
             toLogin();
-            print("Muntaqim Mehdi Shah Login");
           } else if (state is InitializationComplete) {
             toHome();
-            print("Muntaqim Mehdi Shah Home");
           } else if (state is InitializationPendingExternalChangeState) {
             showErrorSnackBar(
               context,

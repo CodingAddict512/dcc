@@ -462,26 +462,45 @@ class InitializationCubit extends Cubit<InitializationState> {
       debugPrint(
           "User already logged in, emitting InitializationUserInitialized.");
     } else {
-      FirestoreConfiguration firestoreConfiguration =
-          await sharedPreferencesRepository.getFirestoreConfiguration();
-      String username = await secureStorageRepository.getUsername();
-      String password = await secureStorageRepository.getPassword();
+      try {
+        FirestoreConfiguration firestoreConfiguration =
+            await sharedPreferencesRepository.getFirestoreConfiguration();
+        String username = await secureStorageRepository.getUsername();
+        String password = await secureStorageRepository.getPassword();
+        if (username == "" || password == "") {
+          developer.log("No credentials - awaiting user",
+              name: "initialization_cubit");
+          // We do not have a valid login/setup and need to punt this to
+          // a login/welcome screen that handles it.  We subscribe on the
+          // login being a success as a means to know when to continue.
+          setupAwaitLoginListener();
 
-      developer.log("Existing credentials found, trying them ...",
-          name: "initialization_cubit");
-      await userCubit.login(firestoreConfiguration, username, password);
-      if (userCubit.state is UserLoggedIn) {
-        developer.log("Login successful", name: "initialization_cubit");
-        emit(InitializationUserInitialized());
-        debugPrint("Login successful, emitting InitializationUserInitialized.");
-      } else {
-        developer.log("Login failed: ${userCubit.state}",
-            name: "initialization_cubit");
+          emit(InitializationUserNoCredentials());
+        } else {
+          developer.log("Existing credentials found, trying them ...",
+              name: "initialization_cubit");
+          await userCubit.login(firestoreConfiguration, username, password);
+          if (userCubit.state is UserLoggedIn) {
+            developer.log("Login successful", name: "initialization_cubit");
+            emit(InitializationUserInitialized());
+            debugPrint(
+                "Login successful, emitting InitializationUserInitialized.");
+          } else {
+            developer.log("Login failed: ${userCubit.state}",
+                name: "initialization_cubit");
+            setupAwaitLoginListener();
+            emit(InitializationUserNeedsReset(
+                userError: userCubit.state as UserError));
+            debugPrint("Login failed, emitting InitializationUserNeedsReset.");
+          }
+        }
+      } catch (err) {
+        developer.log("Error while getting firestore configuration : $err");
         setupAwaitLoginListener();
-        emit(InitializationUserNeedsReset(
-            userError: userCubit.state as UserError));
-        debugPrint("Login failed, emitting InitializationUserNeedsReset.");
+        emit(InitializationUserNoCredentials());
       }
+
+      assert(!(state is InitializationUserLoading));
     }
   }
 
